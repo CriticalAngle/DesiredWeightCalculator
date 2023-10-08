@@ -54,7 +54,8 @@ export default function Home() {
                     }} className={styles.input} placeholder={'210lbs'}/>
                     <div style={{height: '32px'}}/>
                     <div style={{
-                        opacity: isNaN(calculateVelocity()) ? 0 : 1
+                        opacity: isNaN(calculateVelocity()) ? 0 : 1,
+                        transitionDuration: '0.4s'
                     }}>
                         {formatVelocity()}
                     </div>
