@@ -1,95 +1,73 @@
-import Image from 'next/image'
+'use client';
+
 import styles from './page.module.css'
+import {useRef, useState} from "react";
 
 export default function Home() {
-  return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    const [speed, setSpeed] = useState(0);
+    const [currentWeight, setCurrentWeight] = useState(0);
+    const [desiredWeight, setDesiredWeight] = useState(0);
+
+    const calculateVelocity = () => {
+        const speedOfLightMetersPerSecond = 299800000;
+        const metersPerSecondToMilesPerHour = 2.237;
+        const poundsToKilograms = 2.205;
+
+        return Math.floor(
+            Math.sqrt((1.0 - Math.pow(((currentWeight / poundsToKilograms) / (desiredWeight / poundsToKilograms)), 2)) *
+                Math.pow(speedOfLightMetersPerSecond, 2))
+            * metersPerSecondToMilesPerHour);
+    }
+
+    const formatVelocity = () => {
+        return (
+            <h2>Easy! Just travel at <span style={{
+                textShadow: '0 0 12px rgb(44,209,85)',
+                color: '#2cd155'
+            }}>
+                {calculateVelocity().toLocaleString()}</span> mph <br/> to reach that weight!
+            </h2>
+        );
+    }
+
+    return (
+        <div style={{display: 'flex', backgroundColor: '#e5e5e5', flexDirection: 'column', minHeight: '100vh'}}>
+            <h1>
+                Desired weight calculator
+            </h1>
+            <div className={styles.main}>
+                <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <h2>What is your current weight (lbs)?</h2>
+                    <input onChange={(e) => {
+                        const parse = parseFloat(e.target.value);
+                        if (!isNaN(parse)) {
+                            setCurrentWeight(parse);
+                        }
+                    }} className={styles.input} placeholder={'175lbs'}/>
+                    <div style={{height: '32px'}}/>
+                    <h2>What weight would you like to be (lbs)?</h2>
+                    <input onChange={(e) => {
+                        const parse = parseFloat(e.target.value);
+                        if (!isNaN(parse)) {
+                            setDesiredWeight(parse);
+                        }
+                    }} className={styles.input} placeholder={'210lbs'}/>
+                    <div style={{height: '32px'}}/>
+                    <div style={{
+                        opacity: isNaN(calculateVelocity()) ? 0 : 1
+                    }}>
+                        {formatVelocity()}
+                    </div>
+                </div>
+            </div>
+            <a style={{
+                color: 'black',
+                textShadow: '0 0 8px rgba(0, 0, 0, 0.25)'
+            }} href={'https://en.m.wikipedia.org/wiki/Lorentz_factor'} target={'_blank'}>
+                <h3>
+                    (https://en.m.wikipedia.org/wiki/Lorentz_factor)
+                </h3>
+            </a>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    )
 }
